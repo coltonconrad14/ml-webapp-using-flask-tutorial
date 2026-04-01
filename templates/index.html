@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iris Predictor | Flask ML App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="layout">
+      <section class="panel intro">
+        <p class="eyebrow">Flask + Scikit-learn</p>
+        <h1>Iris Species Predictor</h1>
+        <p class="subtitle">
+          Enter flower measurements and get an instant species prediction from a trained machine learning model.
+        </p>
+        <p class="metric">Validation accuracy: {{ '%.2f'|format(validation_accuracy * 100) }}%</p>
+      </section>
+
+      <section class="panel form-panel">
+        <form method="POST" action="/predict" class="predict-form">
+          {% for i in range(4) %}
+          <label for="feature_{{ i }}">{{ feature_names[i] }}</label>
+          <input
+            id="feature_{{ i }}"
+            type="number"
+            name="feature_{{ i }}"
+            value="{{ values[i] }}"
+            step="0.1"
+            required
+          />
+          {% endfor %}
+
+          <button type="submit">Predict Species</button>
+        </form>
+
+        {% if error %}
+        <p class="feedback error">{{ error }}</p>
+        {% endif %}
+
+        {% if prediction %}
+        <div class="feedback success">
+          <p><strong>Prediction:</strong> {{ prediction }}</p>
+          <p><strong>Confidence:</strong> {{ '%.2f'|format(probability * 100) }}%</p>
+        </div>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>
