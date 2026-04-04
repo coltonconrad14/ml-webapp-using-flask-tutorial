@@ -1,6 +1,12 @@
 services:
   - type: web
+    name: streamlit-iris-predictor
+    env: python
+    buildCommand: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+    startCommand: python -m streamlit run streamlit_app.py --server.headless true --server.address 0.0.0.0 --server.port $PORT
+
+  - type: web
     name: flask-iris-predictor
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    buildCommand: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app

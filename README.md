@@ -39,13 +39,15 @@ Create a free service in Render and integrate the work you have done to be able 
 
 ## Sample implementation in this repository
 
-This repository now includes a complete Flask + ML example using the Iris dataset:
+This repository now includes both **Flask** and **Streamlit** versions of the Iris ML app:
 
 - `src/train_model.py`: trains and saves the model artifact.
 - `model/iris_model.joblib`: serialized trained model.
 - `app.py`: Flask app with `/` and `/predict` routes.
-- `templates/index.html` and `static/styles.css`: user interface.
-- `render.yaml`: Render deployment configuration.
+- `streamlit_app.py`: Streamlit version ready for Render deployment.
+- `src/predictor.py`: shared model loading and prediction helpers.
+- `templates/index.html` and `static/styles.css`: Flask user interface.
+- `render.yaml`: Render deployment configuration for both services.
 
 ### Run locally
 
@@ -61,17 +63,23 @@ python -m pip install -r requirements.txt
 python src/train_model.py
 ```
 
-3. Start the Flask app:
+3. Start the Streamlit app:
+
+```bash
+python -m streamlit run streamlit_app.py
+```
+
+4. Or start the Flask app:
 
 ```bash
 python app.py
 ```
 
-4. Open the app at `http://127.0.0.1:3000`.
-
 ### Deploy on Render
 
-This repository includes `render.yaml` using:
+This repository includes `render.yaml` with:
 
-- Build command: `pip install -r requirements.txt`
-- Start command: `gunicorn app:app`
+- **Streamlit service:** `python -m streamlit run streamlit_app.py --server.address 0.0.0.0 --server.port $PORT`
+- **Flask service:** `gunicorn --bind 0.0.0.0:$PORT app:app`
+
+If you only want the Streamlit deployment, keep the `streamlit-iris-predictor` service in `render.yaml`.
